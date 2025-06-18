@@ -958,7 +958,7 @@ class BehavioralLearningSystem {
 import express from 'express';
 import cors from 'cors';
 
-class Celeste7BehavioralAPI {
+export class Celeste7BehavioralAPI {
   constructor() {
     this.app = express();
     this.patternEngine = new BehavioralPatternEngine();
@@ -988,6 +988,21 @@ class Celeste7BehavioralAPI {
         service: 'celeste7-behavioral-engine',
         version: '1.0.0',
         uptime: process.uptime()
+      });
+    });
+
+    // Root route for API info
+    this.app.get('/', (req, res) => {
+      res.json({
+        service: 'CELESTE7 Behavioral Engine',
+        version: '1.0.0',
+        status: 'running',
+        endpoints: {
+          health: '/health',
+          analyze: 'POST /analyze',
+          trackOutcome: 'POST /track-outcome',
+          patterns: 'GET /patterns/:userId'
+        }
       });
     });
     
