@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "CELESTE7 Behavioral Intelligence API",
   "type": "module",
-  "main": "src/index.js",
+  "main": "behavioral-engine2.js",
   "scripts": {
     "build": "echo 'No build step required'",
-    "start": "node src/index.js",
-    "dev": "node src/index.js"
+    "start": "node behavioral-engine2.js",
+    "dev": "node behavioral-engine2.js"
   },
   "dependencies": {
     "@huggingface/inference": "^2.6.1",
