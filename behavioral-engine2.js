@@ -859,6 +859,30 @@ class BehavioralLearningSystem {
     });
   }
   
+  async updateUserPatternHistory(userId, patternAnalysis) {
+    try {
+      const historyData = {
+        user_id: userId,
+        pattern_type: patternAnalysis.primary_pattern,
+        confidence: patternAnalysis.confidence,
+        severity: patternAnalysis.severity,
+        timestamp: new Date().toISOString()
+      };
+      await this.db.storePatternHistory(historyData);
+      if (typeof logger !== 'undefined') {
+        logger.info({ userId, pattern: patternAnalysis.primary_pattern }, 'Pattern history updated');
+      } else {
+        console.log('Pattern history updated', { userId, pattern: patternAnalysis.primary_pattern });
+      }
+    } catch (error) {
+      if (typeof logger !== 'undefined') {
+        logger.error({ error, userId }, 'Failed to update pattern history');
+      } else {
+        console.error('Failed to update pattern history', { error, userId });
+      }
+    }
+  }
+  
   async learn(intervention, effectiveness) {
     // Update intervention strategy effectiveness
     await this.updateStrategyEffectiveness(
@@ -931,8 +955,8 @@ class BehavioralLearningSystem {
 // 4. INTEGRATION API
 // ============================================
 
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
 
 class Celeste7BehavioralAPI {
   constructor() {
@@ -1128,6 +1152,11 @@ class Celeste7BehavioralAPI {
       scheduleOutcomeCollection: async (data) => {
         // Schedule collection
         console.log('Scheduling outcome collection:', data);
+      },
+      
+      storePatternHistory: async (data) => {
+        // Store pattern history
+        console.log('Storing pattern history:', data);
       }
     };
   }
@@ -1144,13 +1173,14 @@ class Celeste7BehavioralAPI {
 // 5. DEPLOYMENT
 // ============================================
 
-// For Vercel deployment
-if (process.env.VERCEL) {
-  const api = new Celeste7BehavioralAPI();
-  module.exports = api.app;
-} else {
-  // For local/other deployment
-  const api = new Celeste7BehavioralAPI();
+// Create API instance
+const api = new Celeste7BehavioralAPI();
+
+// Export for Vercel deployment
+export default api.app;
+
+// Start server for local/other deployment (not Vercel)
+if (!process.env.VERCEL) {
   api.start(process.env.PORT || 3000);
 }
 
