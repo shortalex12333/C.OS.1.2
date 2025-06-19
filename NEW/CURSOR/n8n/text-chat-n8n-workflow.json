@@ -1,0 +1,429 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## CELESTEOS",
+        "width": 440,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2520,
+        780
+      ],
+      "id": "465f5580-780d-427f-a7d7-26b7eb26e7ec",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 440,
+        "width": 2440,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2420,
+        660
+      ],
+      "id": "22b20582-3e7b-4832-82c7-5008a0ff6562",
+      "name": "Sticky Note",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c7/text-chat",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "GET,POST,OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type,Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -2200,
+        800
+      ],
+      "id": "398c8035-6361-4a39-9d0b-af2318b3cff8",
+      "typeVersion": 2,
+      "webhookId": "celeste7-beast-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple rate limiter with user isolation\nconst userId = $json.body.userId;\nconst now = Date.now();\nconst WINDOW = 60000; // 1 minute\nconst MAX_REQUESTS = 20;\n\n// Initialize if needed\nif (!global.rateLimits) {\n  global.rateLimits = new Map();\n}\n\n// Clean old entries every 5 minutes\nif (!global.lastCleanup || now - global.lastCleanup > 300000) {\n  for (const [key, data] of global.rateLimits.entries()) {\n    if (now - data.windowStart > WINDOW * 2) {\n      global.rateLimits.delete(key);\n    }\n  }\n  global.lastCleanup = now;\n}\n\n// Check user's rate\nlet userLimit = global.rateLimits.get(userId);\nif (!userLimit || now - userLimit.windowStart > WINDOW) {\n  userLimit = { windowStart: now, count: 1 };\n  global.rateLimits.set(userId, userLimit);\n} else {\n  userLimit.count++;\n}\n\nif (userLimit.count > MAX_REQUESTS) {\n  throw new Error('Rate limit exceeded. Please wait a moment.');\n}\n\nreturn {\n  json: {\n    ...$json,\n    timestamp: now\n  }\n};"
+      },
+      "name": "Rate Limiter",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1980,
+        800
+      ],
+      "id": "50ee84c1-6c4f-445f-910e-9730cad7f7a3",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- OPTIMIZED: Get user context efficiently\nSELECT \n  ubc.*,\n  -- Recent patterns\n  COALESCE(rp.patterns, '[]'::json) as recent_patterns,\n  -- Effectiveness history\n  COALESCE(pe.effectiveness, '{}'::json) as pattern_effectiveness\nFROM user_behavioral_data ubc\nLEFT JOIN LATERAL (\n  SELECT json_agg(pattern_data) as patterns\n  FROM (\n    SELECT pattern_data\n    FROM learned_patterns\n    WHERE user_id = '{{ $json.body.userId }}'\n    ORDER BY effectiveness_score DESC\n    LIMIT 5\n  ) p\n) rp ON true\nLEFT JOIN LATERAL (\n  SELECT json_object_agg(pattern_type, effectiveness_score) as effectiveness\n  FROM pattern_effectiveness\n  WHERE user_id = '{{ $json.body.userId }}'\n) pe ON true\nWHERE ubc.user_id = '{{ $json.body.userId }}'",
+        "options": {}
+      },
+      "name": "Get User Context",
+      "type": "n8n-nodes-base.postgres",
+      "position": [
+        -1760,
+        800
+      ],
+      "id": "64a4427d-5cd6-4aae-a050-7bb4beaeac9f",
+      "typeVersion": 2.6,
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "AeWxukKxm7dtP7Wc",
+          "name": "CelesteOS"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fallback context for new users or DB errors\nreturn {\n  json: {\n    user_id: $json.body.userId,\n    user_email: $json.body.user.email,\n    user_name: $json.body.user.displayName,\n    current_message: $json.body.message,\n    trust_level: 5,\n    challenge_tolerance: 5,\n    behavioral_health_score: 50,\n    business_model_type: 'unknown',\n    growth_stage: 'early',\n    messages_last_hour: 0,\n    recent_patterns: [],\n    pattern_effectiveness: {},\n    is_new_user: true\n  }\n};"
+      },
+      "name": "Context Fallback",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1540,
+        880
+      ],
+      "id": "96629635-d548-4e61-bb97-70fa8dccab64",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "maxTokens": 800,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1360,
+        1020
+      ],
+      "id": "dd6d17e4-cc30-4fcb-8dc8-b50f4681f2b2",
+      "name": "OpenAI Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "hJSsvdiuTIjyC05Q",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are CELESTE7, an AI assistant for entrepreneurs and solopreneurs.\\n\\nUser: {{ $json.user_name || 'Friend' }}\\nBusiness: {{ $json.business_model_type || 'Not specified' }}\\nCurrent Message: {{ $json.current_message }}\\n\\nProvide a helpful, actionable response. Be direct and practical.\\nFocus on their specific question without making assumptions about their patterns.\\nKeep your response concise and valuable.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -1320,
+        800
+      ],
+      "id": "9550888a-984a-47d7-829d-c01c7226b239",
+      "name": "Stage 1: AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// CELESTE7 BEAST MODE ORACLE - PRODUCTION VERSION\n// Calls your live Vercel API instead of doing ML in n8n\n\nasync function beastModeOracle(context, aiResponse) {\n  const ORACLE_API_URL = 'https://code-gules-tau.vercel.app';\n  const userId = context.user_id;\n  const message = context.current_message;\n  \n  try {\n    // 1. ANALYZE THE MESSAGE WITH YOUR ORACLE API\n    console.log('Calling Oracle API for pattern analysis...');\n    \n    const analyzeResponse = await fetch(`${ORACLE_API_URL}/api/analyze`, {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({\n        userId: userId,\n        message: message,\n        context: {\n          businessType: context.business_model_type || 'unknown',\n          energyLevel: context.current_energy || 'medium',\n          trustLevel: context.trust_level || 5,\n          recentPatterns: context.recent_patterns || [],\n          messagesLastHour: context.messages_last_hour || 0\n        }\n      })\n    });\n    \n    if (!analyzeResponse.ok) {\n      throw new Error(`Oracle API error: ${analyzeResponse.status}`);\n    }\n    \n    const analysis = await analyzeResponse.json();\n    \n    // 2. CHECK IF WE SHOULD ENHANCE\n    if (!analysis.success || !analysis.data?.patterns?.length) {\n      console.log('No patterns detected, returning original response');\n      return {\n        enhanced_response: aiResponse,\n        original_response: aiResponse,\n        analysis: { patterns: [], intervened: false }\n      };\n    }\n    \n    const primaryPattern = analysis.data.patterns[0];\n    console.log(`Pattern detected: ${primaryPattern.name} (${primaryPattern.confidence})`);\n    \n    // 3. ENHANCE THE RESPONSE IF HIGH CONFIDENCE\n    if (primaryPattern.confidence < 0.7) {\n      console.log('Confidence too low, skipping enhancement');\n      return {\n        enhanced_response: aiResponse,\n        original_response: aiResponse,\n        analysis: analysis.data,\n        pattern_detected: primaryPattern.name,\n        confidence: primaryPattern.confidence,\n        intervened: false\n      };\n    }\n    \n    // 4. GET ENHANCED RESPONSE FROM ORACLE API\n    console.log('Requesting response enhancement...');\n    \n    const enhanceResponse = await fetch(`${ORACLE_API_URL}/api/enhance`, {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({\n        userId: userId,\n        message: message,\n        aiResponse: aiResponse,\n        context: {\n          businessType: context.business_model_type || 'unknown',\n          energyLevel: context.current_energy || 'medium',\n          trustLevel: context.trust_level || 5,\n          pattern: primaryPattern\n        }\n      })\n    });\n    \n    if (!enhanceResponse.ok) {\n      console.error('Enhancement failed, using fallback');\n      // Fallback to simple enhancement\n      const fallbackEnhancement = getFallbackIntervention(primaryPattern.name, context);\n      return {\n        enhanced_response: aiResponse + \"\\n\\n\" + fallbackEnhancement,\n        original_response: aiResponse,\n        analysis: analysis.data,\n        pattern_detected: primaryPattern.name,\n        confidence: primaryPattern.confidence,\n        intervened: true,\n        fallback: true\n      };\n    }\n    \n    const enhancement = await enhanceResponse.json();\n    \n    // 5. RETURN ENHANCED RESPONSE\n    return {\n      enhanced_response: enhancement.data?.response || aiResponse,\n      original_response: aiResponse,\n      analysis: analysis.data,\n      pattern_detected: primaryPattern.name,\n      confidence: primaryPattern.confidence,\n      intervened: enhancement.data?.enhanced || false,\n      enhancement_id: enhancement.data?.id\n    };\n    \n  } catch (error) {\n    console.error('Oracle error:', error);\n    \n    // GRACEFUL FALLBACK - Don't break the conversation\n    return {\n      enhanced_response: aiResponse,\n      original_response: aiResponse,\n      error: error.message,\n      intervened: false,\n      fallback: true\n    };\n  }\n}\n\n// FALLBACK INTERVENTIONS (if API is down)\nfunction getFallbackIntervention(pattern, context) {\n  const interventions = {\n    procrastination: \"🎯 I notice you're delaying. What's ONE thing you can do right now?\",\n    planning_paralysis: \"📋 Another plan won't help. Pick one action and execute today.\",\n    perfectionism: \"✅ Ship at 80% or watch it die at 0%.\",\n    pricing_anxiety: \"💰 Your pricing reflects your confidence. What would confident you charge?\",\n    execution_blocking: \"🚧 What's really stopping you? Name it, then solve it.\",\n    imposter_syndrome: \"🔥 You're more ready than you think. Your experience has value.\"\n  };\n  \n  let intervention = interventions[pattern] || \"💡 Take action on this insight today.\";\n  \n  // Add urgency for low energy states\n  if (context.current_energy === 'low') {\n    intervention = \"🔋 Low energy detected. \" + intervention + \" Just one small step.\";\n  }\n  \n  return intervention;\n}\n\n// MAIN EXECUTION\nconsole.log('Starting Beast Mode Oracle analysis...');\n\nconst result = await beastModeOracle(\n  $json, // User context from database\n  $node[\"Stage 1: AI Agent\"].json.output // AI response to enhance\n);\n\n// Add metadata for tracking\nresult.timestamp = new Date().toISOString();\nresult.user_id = $json.user_id;\nresult.oracle_version = '2.0';\n\nconsole.log(`Oracle complete. Enhanced: ${result.intervened}`);\n\nreturn { json: result };"
+      },
+      "name": "Stage 2: Beast Mode Oracle",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -940,
+        800
+      ],
+      "id": "da1eb452-fbe2-4f27-9f52-a80c0738edac",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format final response\nconst response = {\n  success: true,\n  message: $json.enhanced_response,\n  user: {\n    id: $node['Chat Webhook'].json.body.userId,\n    email: $node['Chat Webhook'].json.body.user.email,\n    displayName: $node['Chat Webhook'].json.body.user.displayName\n  },\n  metadata: {\n    enhanced: $json.enhanced_response !== $json.original_response,\n    intervention: $json.intervention,\n    processing_time: $json.processing_time,\n    timestamp: new Date()\n  }\n};\n\nreturn { json: response };"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -720,
+        800
+      ],
+      "id": "fb9f0c33-527a-4f84-93f6-3af2a9e61df1",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "tableId": "conversations",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{ $json.user.id }}"
+            },
+            {
+              "fieldId": "message",
+              "fieldValue": "={{ $node['Chat Webhook'].json.body.message }}"
+            },
+            {
+              "fieldId": "ai_reply",
+              "fieldValue": "={{ $json.message }}"
+            },
+            {
+              "fieldId": "enhanced",
+              "fieldValue": "={{ $json.metadata.enhanced }}"
+            },
+            {
+              "fieldId": "pattern_detected",
+              "fieldValue": "={{ $json.metadata.intervention?.pattern?.type || null }}"
+            }
+          ]
+        }
+      },
+      "name": "Store Conversation",
+      "type": "n8n-nodes-base.supabase",
+      "position": [
+        -500,
+        700
+      ],
+      "id": "c143f599-2426-429c-bccf-4128719f006d",
+      "typeVersion": 1,
+      "credentials": {
+        "supabaseApi": {
+          "id": "7l6P2dwzAjWUPyaM",
+          "name": "Personal SupaBase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "pattern_predictions",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{ $json.user.id }}"
+            },
+            {
+              "fieldId": "pattern_type",
+              "fieldValue": "={{ $json.metadata.intervention?.pattern?.type || 'none' }}"
+            },
+            {
+              "fieldId": "confidence_score",
+              "fieldValue": "={{ $json.metadata.intervention?.pattern?.confidence || 0 }}"
+            },
+            {
+              "fieldId": "intervention_delivered",
+              "fieldValue": "={{ $json.metadata.enhanced }}"
+            }
+          ]
+        }
+      },
+      "name": "Store Intervention",
+      "type": "n8n-nodes-base.supabase",
+      "position": [
+        -500,
+        900
+      ],
+      "id": "35ae25f6-8fbf-4e89-85c3-d7fba1a7aef2",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "7l6P2dwzAjWUPyaM",
+          "name": "Personal SupaBase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        -280,
+        800
+      ],
+      "id": "ec0b1e14-fa98-40e5-ac3f-1fac4faee9fe",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 BEAST MODE ORACLE FEATURES\n\n**Real ML Classification**\n- HuggingFace BART for intent\n- BERT for sentiment analysis\n- Zero-shot classification\n- Cached for performance\n\n**Smart Pattern Detection**\n- Behavioral patterns\n- Temporal patterns\n- Success patterns\n- Severity scoring\n\n**Intelligent Decisions**\n- Confidence thresholds\n- User receptiveness\n- Intervention frequency\n- Historical effectiveness\n\n**Dynamic Responses**\n- Severity-based\n- Pattern-specific\n- GPT-4 personalization\n- A/B testing ready",
+        "height": 640,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        600
+      ],
+      "id": "9382b01f-f536-442e-8cd4-b841c5af863f",
+      "name": "Sticky Note2"
+    }
+  ],
+  "connections": {
+    "Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Rate Limiter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limiter": {
+      "main": [
+        [
+          {
+            "node": "Get User Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Context": {
+      "main": [
+        [
+          {
+            "node": "Stage 1: AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Context Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context Fallback": {
+      "main": [
+        [
+          {
+            "node": "Stage 1: AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Stage 1: AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 1: AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Stage 2: Beast Mode Oracle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 2: Beast Mode Oracle": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Store Conversation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Store Intervention",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Conversation": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Intervention": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "068fcf99ddb3fd716c0b9e3d012c519dd8a4dfdbe854073434d3ac70e6f4cf11"
+  }
+}

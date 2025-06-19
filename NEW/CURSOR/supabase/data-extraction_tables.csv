@@ -1,0 +1,402 @@
+﻿table_name,column_name,data_type
+business:advertisments,id,bigint
+business:advertisments,created_at,timestamp with time zone
+business:advertisments,user input,text
+business:advertisments,user_id,text
+business:advertisments,ad_spend,numeric
+business:advertisments,revenue_generated,numeric
+business:advertisments,platform,text
+business:advertisments,campaign_type,text
+business:advertisments,impressions,integer
+business:advertisments,clicks,integer
+business:advertisments,conversions,integer
+business:advertisments,roi_percentage,numeric
+business:advertisments,hours_spent_optimizing,numeric
+business:advertisments,confidence_level,numeric
+business:advertisments,emotional_signals,text
+business:advertisments,roas_reported,numeric
+business:agency,id,bigint
+business:agency,created_at,timestamp with time zone
+business:agency,user input,text
+business:agency,user_id,text
+business:agency,service_type,text
+business:agency,client_count,integer
+business:agency,active_projects,integer
+business:agency,average_project_value,numeric
+business:agency,project_completion_rate,numeric
+business:agency,client_retention_rate,numeric
+business:agency,referral_rate,numeric
+business:agency,capacity_utilization,numeric
+business:agency,profit_margin_percentage,numeric
+business:agency,payment_terms_days,integer
+business:agency,outstanding_invoices_amount,numeric
+business:agency,scope_creep_frequency,integer
+business:agency,client_satisfaction_score,numeric
+business:agency,team_productivity_score,integer
+business:agency,subcontractor_percentage,numeric
+business:agency,niche_specialization,text
+business:agency,pricing_model,text
+business:agency,confidence_level,numeric
+business:agency,emotional_signals,text
+business:content,id,bigint
+business:content,created_at,timestamp with time zone
+business:content,user input,text
+business:content,user_id,text
+business:content,content_type,text
+business:content,platform,text
+business:content,posting_frequency,text
+business:content,content_pieces_created,integer
+business:content,engagement_rate,numeric
+business:content,follower_count,integer
+business:content,reach_impressions,integer
+business:content,click_through_rate,numeric
+business:content,conversion_to_lead,numeric
+business:content,content_production_hours,numeric
+business:content,batch_creation_efficiency,integer
+business:content,repurposing_ratio,numeric
+business:content,trending_content_topics,ARRAY
+business:content,audience_feedback_sentiment,text
+business:content,monetization_methods,ARRAY
+business:content,revenue_per_thousand_views,numeric
+business:content,confidence_level,numeric
+business:content,emotional_signals,text
+business:ecommerce,id,bigint
+business:ecommerce,created_at,timestamp with time zone
+business:ecommerce,user input,text
+business:ecommerce,user_id,text
+business:ecommerce,product_category,text
+business:ecommerce,inventory_count,integer
+business:ecommerce,products_listed,integer
+business:ecommerce,conversion_rate,numeric
+business:ecommerce,average_order_value,numeric
+business:ecommerce,cart_abandonment_rate,numeric
+business:ecommerce,return_rate,numeric
+business:ecommerce,fulfillment_time_days,integer
+business:ecommerce,customer_acquisition_cost,numeric
+business:ecommerce,lifetime_value,numeric
+business:ecommerce,traffic_sources,ARRAY
+business:ecommerce,bestselling_product,text
+business:ecommerce,inventory_turnover_rate,numeric
+business:ecommerce,seasonal_patterns,text
+business:ecommerce,supplier_reliability,integer
+business:ecommerce,shipping_cost_percentage,numeric
+business:ecommerce,confidence_level,numeric
+business:ecommerce,emotional_signals,text
+business:finance,id,bigint
+business:finance,created_at,timestamp with time zone
+business:finance,user input,text
+business:finance,user_id,text
+business:finance,gross_revenue,numeric
+business:finance,net_revenue,numeric
+business:finance,gross_margin_percentage,numeric
+business:finance,operating_expenses,numeric
+business:finance,cash_flow,numeric
+business:finance,runway_months,numeric
+business:finance,burn_rate,numeric
+business:finance,customer_acquisition_cost,numeric
+business:finance,lifetime_value,numeric
+business:finance,payback_period_months,numeric
+business:finance,revenue_growth_rate,numeric
+business:finance,expense_categories,jsonb
+business:finance,tax_preparation_status,text
+business:finance,financial_forecasting_accuracy,integer
+business:finance,invoice_collection_rate,numeric
+business:finance,emergency_fund_months,numeric
+business:finance,investment_in_growth,numeric
+business:finance,profitability_timeline,text
+business:finance,financial_tracking_frequency,text
+business:finance,confidence_level,numeric
+business:finance,emotional_signals,text
+business:models,id,bigint
+business:models,user_id,text
+business:models,business_type,text
+business:models,revenue_model,text
+business:models,primary_channels,ARRAY
+business:models,target_market,text
+business:models,monthly_revenue_range,text
+business:models,business_stage,text
+business:models,team_size,integer
+business:models,confidence_level,numeric
+business:models,emotional_signals,text
+business:models,created_at,timestamp with time zone
+business:models,updated_at,timestamp with time zone
+business:networking,id,bigint
+business:networking,created_at,timestamp with time zone
+business:networking,user input,text
+business:networking,user_id,text
+business:networking,contact_type,text
+business:networking,relationship_strength,integer
+business:networking,last_interaction_date,date
+business:networking,value_provided,character varying
+business:networking,value_received,character varying
+business:networking,follow_up_scheduled,boolean
+business:networking,referrals_generated,integer
+business:networking,revenue_attributed,numeric
+business:networking,confidence_level,numeric
+business:networking,emotional_signals,text
+business:operations,id,bigint
+business:operations,created_at,timestamp with time zone
+business:operations,user input,text
+business:operations,user_id,text
+business:operations,automation_level,integer
+business:operations,system_integrations,integer
+business:operations,manual_processes_count,integer
+business:operations,process_documentation_completeness,integer
+business:operations,error_rate,numeric
+business:operations,customer_service_response_time_hours,numeric
+business:operations,order_fulfillment_accuracy,numeric
+business:operations,inventory_management_system,text
+business:operations,financial_tracking_system,text
+business:operations,backup_systems_in_place,boolean
+business:operations,security_measures_score,integer
+business:operations,scalability_bottlenecks,ARRAY
+business:operations,outsourced_functions,ARRAY
+business:operations,time_spent_on_admin_hours,numeric
+business:operations,system_downtime_hours,numeric
+business:operations,data_quality_score,integer
+business:operations,confidence_level,numeric
+business:operations,emotional_signals,text
+business:product,id,bigint
+business:product,created_at,timestamp with time zone
+business:product,user input,text
+business:product,user_id,text
+business:product,product_type,text
+business:product,development_stage,text
+business:product,feature_requests_backlog,integer
+business:product,user_feedback_score,numeric
+business:product,development_velocity,integer
+business:product,technical_debt_level,integer
+business:product,quality_assurance_score,integer
+business:product,market_fit_indicators,jsonb
+business:product,competitor_analysis_freshness_days,integer
+business:product,innovation_frequency,text
+business:product,feature_adoption_rate,numeric
+business:product,support_burden_score,integer
+business:product,pricing_optimization_tests,integer
+business:product,user_onboarding_completion_rate,numeric
+business:product,product_market_fit_score,integer
+business:product,roadmap_clarity_score,integer
+business:product,confidence_level,numeric
+business:product,emotional_signals,text
+business:saas,id,bigint
+business:saas,created_at,timestamp with time zone
+business:saas,user input,text
+business:saas,user_id,text
+business:saas,monthly_recurring_revenue,numeric
+business:saas,annual_recurring_revenue,numeric
+business:saas,active_subscribers,integer
+business:saas,new_signups,integer
+business:saas,churn_rate,numeric
+business:saas,user_activation_rate,numeric
+business:saas,feature_adoption_rates,jsonb
+business:saas,customer_success_score,integer
+business:saas,support_ticket_volume,integer
+business:saas,development_velocity,integer
+business:saas,technical_debt_level,integer
+business:saas,uptime_percentage,numeric
+business:saas,user_engagement_score,numeric
+business:saas,pricing_tier_distribution,jsonb
+business:saas,trial_to_paid_conversion,numeric
+business:saas,expansion_revenue,numeric
+business:saas,confidence_level,numeric
+business:saas,emotional_signals,text
+business:sales,id,bigint
+business:sales,created_at,timestamp with time zone
+business:sales,user input,text
+business:sales,user_id,text
+business:sales,deal_value,numeric
+business:sales,deal_source,character varying
+business:sales,sales_channel,text
+business:sales,time_to_close,integer
+business:sales,deal_stage,text
+business:sales,rejection_reason,text
+business:sales,energy_level_during_sale,integer
+business:sales,follow_ups_required,integer
+business:sales,recipient,text
+business:sales,company_of_recipient,text
+business:sales,topic,text
+business:sales,analysis_sentiment,text
+business:sales,analysis_keywords,text
+business:sales,analysis_objections,text
+business:sales,analysis_next_steps,text
+business:sales,analysis_recommendation,text
+business:sales,product_service_offered,text
+business:sales,email_sent,text
+business:sales,confidence_level,numeric
+business:sales,emotional_signals,text
+business:sales,transaction_type,text
+business:sales,automation_level,text
+business:sales,customer_acquisition_cost,numeric
+business:sales,lifetime_value,numeric
+business:sales,sales_velocity,numeric
+business_model_patterns,id,bigint
+business_model_patterns,business_type,text
+business_model_patterns,pattern_type,text
+business_model_patterns,pattern_weight,numeric
+business_model_patterns,intervention_priority,integer
+business_model_patterns,created_at,timestamp with time zone
+common_problems,id,bigint
+common_problems,created_at,timestamp with time zone
+common_problems,user_id,text
+common_problems,CommonProblems,text
+common_problems,Pattern,text
+common_problems,Category,text
+common_problems,user input,text
+common_problems,confidence_level,numeric
+common_problems,emotional_signals,text
+emotions,id,bigint
+emotions,created_at,timestamp with time zone
+emotions,user_id,text
+emotions,fears,text
+emotions,emotions,text
+emotions,topic,text
+emotions,insecurities,text
+emotions,user input,text
+emotions,confidence_level,numeric
+emotions,emotional_signals,text
+family,id,bigint
+family,created_at,timestamp with time zone
+family,user input,text
+family,user_id,text
+family,interaction_type,character varying
+family,duration_minutes,integer
+family,present_vs_distracted,integer
+family,relationship_affected,character varying
+family,work_interrupted,boolean
+family,guilt_level,integer
+family,happiness_impact,integer
+family,planned_vs_spontaneous,character varying
+family,confidence_level,numeric
+family,emotional_signals,text
+fitness,id,bigint
+fitness,created_at,timestamp with time zone
+fitness,user_input,text
+fitness,user_id,text
+fitness,Activity,text
+fitness,Time/weight,numeric
+fitness,MetricType,text
+fitness,current_value,text
+fitness,workout_type,text
+fitness,duration_minutes,integer
+fitness,intensity,integer
+fitness,energy_before,integer
+fitness,energy_after,integer
+fitness,workout_time,text
+fitness,missed_planned_workout,boolean
+fitness,excuse_if_missed,text
+fitness,productivity_score_after,integer
+fitness,confidence_level,numeric
+fitness,emotional_signals,text
+goals,id,bigint
+goals,created_at,timestamp with time zone
+goals,user_input,text
+goals,user_id,text
+goals,target_value,numeric
+goals,unit_of_measurement,text
+goals,goal_type,text
+goals,current_value,text
+goals,deadline,date
+goals,priority,smallint
+goals,status,text
+goals,goal_id,bigint
+goals,active_goals,text
+goals,confidence_level,numeric
+goals,emotional_signals,text
+goals,goal_category,text
+goals,business_context,text
+goals,business_impact_score,integer
+health,id,bigint
+health,created_at,timestamp with time zone
+health,user input,text
+health,user_id,text
+health,SleepHours,numeric
+health,Calorie intake,integer
+health,Vitamin intake,text
+health,sleep_hours,numeric
+health,sleep_quality,integer
+health,meals_count,integer
+health,water_liters,numeric
+health,caffeine_intake,integer
+health,stress_level,integer
+health,screen_time_hours,numeric
+health,energy_crashes,text
+health,took_breaks,boolean
+health,mental_clarity,integer
+health,confidence_level,numeric
+health,emotional_signals,text
+leverage,id,bigint
+leverage,created_at,timestamp with time zone
+leverage,user input,text
+leverage,user_id,text
+leverage,leverage_type,character varying
+leverage,time_saved_hours,numeric
+leverage,cost_invested,numeric
+leverage,revenue_impact,numeric
+leverage,implementation_difficulty,integer
+leverage,still_using,boolean
+leverage,failure_reason,character varying
+leverage,multiplier_effect,numeric
+leverage,confidence_level,numeric
+leverage,emotional_signals,text
+performance,id,bigint
+performance,created_at,timestamp with time zone
+performance,user_id,text
+performance,reflectionDueAt,timestamp with time zone
+performance,WhatWentWell,text
+performance,WhatBlocked,text
+performance,TomorrowHurdle,text
+performance,Processed,boolean
+performance,user input,text
+performance,confidence_level,numeric
+performance,emotional_signals,text
+recent_interactions,id,integer
+recent_interactions,user_id,text
+recent_interactions,createdAt,timestamp with time zone
+recent_interactions,interaction_type,character varying
+recent_interactions,content,text
+recent_interactions,category,character varying
+recent_interactions,pattern_detected,character varying
+recent_interactions,session_id,text
+recent_interactions,metadata,jsonb
+recent_interactions,updated_at,timestamp without time zone
+recent_interactions,confidence_level,numeric
+recent_interactions,emotional_signals,text
+routine,id,bigint
+routine,created_at,timestamp with time zone
+routine,user input,text
+routine,user_id,text
+routine,confidence_level,numeric
+routine,emotional_signals,text
+routine,routine_type,text
+routine,wake_time,time without time zone
+routine,sleep_time,time without time zone
+routine,duration_minutes,integer
+routine,activities,ARRAY
+routine,completed,boolean
+routine,streak_days,integer
+routine,consistency_score,numeric
+routine,time_of_day,text
+routine,missed_reason,text
+unknown_interactions,id,integer
+unknown_interactions,created_at,timestamp without time zone
+unknown_interactions,user_id,text
+unknown_interactions,user input,text
+unknown_interactions,reason_unclassified,text
+unknown_interactions,potential_categories,ARRAY
+unknown_interactions,emotional_signals,text
+unknown_interactions,confidence_level,numeric
+unknown_interactions,ai_reply,text
+user_feedback,id,bigint
+user_feedback,created_at,timestamp with time zone
+user_feedback,user_id,text
+user_feedback,sessionID,text
+user_feedback,category,text
+user_feedback,user_input,text
+user_feedback,ai_response,text
+user_feedback,pattern_detected,text
+user_feedback,assumption_delivered,boolean
+user_feedback,assumption_id:,integer
+user_feedback,assumption_confidence,numeric
+user_feedback,user_stage,text
+user_feedback,metadata,jsonb
+user_feedback,assumption_id,integer

@@ -1,0 +1,49 @@
+﻿table_name,column_name,data_type
+conversations,id,bigint
+conversations,session_id,text
+conversations,user_id,text
+conversations,title,text
+conversations,status,character varying
+conversations,conversation_type,character varying
+conversations,created_at,timestamp with time zone
+conversations,updated_at,timestamp with time zone
+conversations,last_message_at,timestamp with time zone
+conversations,message_count,integer
+conversations,tags,ARRAY
+conversations,priority,integer
+conversations,is_pinned,boolean
+conversations,user_satisfaction_score,integer
+conversations,ai_confidence_avg,numeric
+conversations,ai_reply,text
+conversations,message,text
+interventions,intervention_id,uuid
+interventions,user_id,uuid
+interventions,intervention_type,text
+interventions,scheduled_for,timestamp without time zone
+interventions,channel,text
+interventions,message_preview,text
+interventions,rag_content,jsonb
+interventions,tracking_metrics,jsonb
+interventions,expected_impact,text
+interventions,status,text
+interventions,created_at,timestamp without time zone
+interventions,sent_at,timestamp without time zone
+notifications,id,bigint
+notifications,notification_id,text
+notifications,user_id,text
+notifications,message,text
+notifications,type,text
+notifications,priority,text
+notifications,channel,text
+notifications,metadata,jsonb
+notifications,created_at,timestamp with time zone
+notifications,sent_at,timestamp with time zone
+notifications,read_at,timestamp with time zone
+rag_sent,id,bigint
+rag_sent,created_at,timestamp with time zone
+rag_sent,user_id,text
+rag_sent,RAG_ID,text
+rag_sent,Session_ID,text
+rag_sent,Context,text
+rag_sent,Pattern_Type,text
+rag_sent,Sent_At,timestamp with time zone

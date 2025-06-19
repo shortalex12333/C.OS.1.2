@@ -1,0 +1,13 @@
+﻿active_users,rest_of_world,numeric
+auth_logs,id,integer
+auth_logs,user_id,text
+auth_logs,event_type,character varying
+auth_logs,ip_address,text
+auth_logs,user_agent,text
+auth_logs,created_at,timestamp without time zone
+user_questions,QuestionID,text
+user_questions,Domain,text
+user_questions,Priority,integer
+user_questions,Question,text
+user_questions,Data_Field,text
+user_questions,user_id,text

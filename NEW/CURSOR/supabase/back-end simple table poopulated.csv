@@ -1,0 +1,12 @@
+﻿table_name,column_name,data_type
+active_users,id,bigint
+active_users,created_at,timestamp with time zone
+active_users,active_users,numeric
+active_users,total_users,numeric
+active_users,usa_users,numeric
+active_users,uk_users,numeric
+active_users,rest_of_world,numeric
+weekly_reports,id,bigint
+weekly_reports,user_id,text
+weekly_reports,report_data,jsonb
+weekly_reports,created_at,timestamp with time zone
