@@ -26,6 +26,15 @@ export class BrutalInterventionGenerator {
 
   // Generate intervention based on resistance level
   async generateIntervention(pattern, evidence, userData, resistanceLevel = 0) {
+    // Defensive check for required arguments
+    if (!pattern || !evidence || !userData) {
+      console.error('Missing required data in generateIntervention:', { pattern, evidence, userData });
+      return {
+        message: 'Insufficient data for intervention.',
+        directive: 'Try again later or contact support.',
+        severity: 'error'
+      };
+    }
     const level = this.resistanceLevels[Math.min(resistanceLevel, 5)];
     const generator = this.interventionGenerators[pattern.type]?.[level];
     
